@@ -2,8 +2,9 @@
  * Genetic Algorithm Engine - Evolves trading strategies
  */
 class GeneticOptimizer {
-    constructor(data, config) {
+    constructor(data, config, symbol = '') {
         this.data = data;
+        this.symbol = symbol;
         this.config = {
             populationSize: config.populationSize || 100,
             generations: config.generations || 50,
@@ -40,7 +41,7 @@ class GeneticOptimizer {
      */
     evaluatePopulation() {
         for (const strategy of this.population) {
-            const backtester = new Backtester(this.data, strategy);
+            const backtester = new Backtester(this.data, strategy, this.symbol);
             strategy.metrics = backtester.run();
             strategy.fitness = this.calculateFitness(strategy.metrics);
         }

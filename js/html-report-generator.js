@@ -3,9 +3,11 @@
  * Generates comprehensive HTML reports with full trading statement
  */
 
-function generateHTMLReport(strategy, index) {
+function generateHTMLReport(strategy, index, symbol = '') {
     const m = strategy.metrics;
     const name = `FxMath_${String(index + 1).padStart(3, '0')}_PF${(m.profitFactor || 0).toFixed(2).replace('.', '_')}_WR${Math.round(m.winRate || 0)}`;
+
+    // Note: Profits are already multiplied in the backtester, so we can display them directly
 
     // Generate SELL rules (inverted operators)
     const sellRulesHTML = strategy.rules.map((rule, i) => {
@@ -44,8 +46,8 @@ function generateHTMLReport(strategy, index) {
                 <td><span class="badge ${typeClass}">${trade.type}</span></td>
                 <td>${new Date(trade.openTime).toLocaleString()}</td>
                 <td>${new Date(trade.closeTime).toLocaleString()}</td>
-                <td>$${trade.entry.toFixed(2)}</td>
-                <td>$${trade.exit.toFixed(2)}</td>
+                <td>$${trade.entry.toFixed(5)}</td>
+                <td>$${trade.exit.toFixed(5)}</td>
                 <td class="${profitClass}">$${trade.profit.toFixed(2)}</td>
                 <td>${trade.reason.toUpperCase()}</td>
             </tr>

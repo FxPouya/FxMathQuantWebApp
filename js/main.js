@@ -6,6 +6,7 @@
 let appData = {
     csvData: null,
     dataName: '',
+    symbol: '',
     optimizer: null,
     foundStrategies: [],
     selectedStrategies: new Set(),
@@ -139,7 +140,14 @@ function handleFileUpload(file) {
             }));
 
             appData.dataName = file.name;
+
+            // Extract symbol from filename
+            appData.symbol = typeof extractSymbolFromFilename === 'function'
+                ? extractSymbolFromFilename(file.name)
+                : '';
+
             console.log('✅ Data loaded successfully:', appData.csvData.length, 'bars');
+            console.log('📊 Detected symbol:', appData.symbol || 'Unknown');
 
             // Apply data size limit
             applyDataSizeLimit();
@@ -189,10 +197,34 @@ function displayDataPreview() {
  * Apply data size limit
  */
 function applyDataSizeLimit() {
-    const limit = parseInt(document.getElementById('data-size-limit').value);
+    const limitSelect = document.getElementById('data-size-limit');
+    const customInput = document.getElementById('custom-bars-input');
+
+    let limit;
+    if (limitSelect.value === 'custom') {
+        limit = parseInt(customInput.value) || 0;
+    } else {
+        limit = parseInt(limitSelect.value);
+    }
+
     if (limit > 0 && appData.csvData.length > limit) {
         console.log(`✂️ Limiting data from ${appData.csvData.length} to ${limit} bars`);
         appData.csvData = appData.csvData.slice(-limit); // Take last N bars
+    }
+}
+
+/**
+ * Toggle custom bars input visibility
+ */
+function toggleCustomBarsInput() {
+    const limitSelect = document.getElementById('data-size-limit');
+    const customInput = document.getElementById('custom-bars-input');
+
+    if (limitSelect.value === 'custom') {
+        customInput.style.display = 'block';
+        customInput.focus();
+    } else {
+        customInput.style.display = 'none';
     }
 }
 
@@ -269,7 +301,8 @@ async function startGeneration() {
 
     // Create optimizer
     console.log('🧬 Creating GA optimizer with config:', config);
-    appData.optimizer = new GeneticOptimizer(appData.csvData, config);
+    console.log('📊 Using symbol:', appData.symbol || 'Unknown');
+    appData.optimizer = new GeneticOptimizer(appData.csvData, config, appData.symbol);
 
     // Start time
     const startTime = Date.now();
@@ -520,8 +553,8 @@ function downloadStrategy(index, type) {
             content = converter.generate();
             filename = name + '.pine';
         } else if (type === 'report') {
-            // Use new HTML report generator
-            content = generateHTMLReport(strategy, index);
+            // Use new HTML report generator with symbol
+            content = generateHTMLReport(strategy, index, appData.symbol);
             filename = name + '_report.html';
         } else if (type === 'json') {
             content = JSON.stringify(strategy.toJSON(), null, 2);
@@ -723,3 +756,4 @@ window.downloadAllStrategies = downloadAllStrategies;
 window.toggleStrategySelection = toggleStrategySelection;
 window.showComparison = showComparison;
 window.hideComparison = hideComparison;
+window.toggleCustomBarsInput = toggleCustomBarsInput;

@@ -117,13 +117,19 @@
                     </div>
                     <div class="form-group" style="margin-top: 20px;">
                         <label>Data Size Limit (bars)</label>
-                        <select id="data-size-limit" class="form-select">
+                        <select id="data-size-limit" class="form-select" onchange="toggleCustomBarsInput()">
                             <option value="0">Use All Data</option>
+                            <option value="500">Last 500 bars</option>
                             <option value="1000">Last 1,000 bars</option>
                             <option value="2000">Last 2,000 bars</option>
+                            <option value="3000">Last 3,000 bars</option>
                             <option value="5000" selected>Last 5,000 bars (Recommended)</option>
                             <option value="10000">Last 10,000 bars</option>
+                            <option value="custom">Custom...</option>
                         </select>
+                        <input type="number" id="custom-bars-input" class="form-select"
+                            placeholder="Enter custom number of bars" min="100" step="100"
+                            style="margin-top: 10px; display: none;">
                         <small>Limit data size for faster processing. Recommended: 5,000 bars</small>
                     </div>
                     <button class="btn-success" id="continue-btn">Continue to Configuration →</button>
@@ -290,6 +296,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="js/utils.js"></script>
     <script src="js/strategy.js"></script>
     <script src="js/backtester.js"></script>
     <script src="js/ga-engine.js"></script>

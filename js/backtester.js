@@ -2,9 +2,15 @@
  * Backtester - Fast backtesting engine using typed arrays
  */
 class Backtester {
-    constructor(data, strategy) {
+    constructor(data, strategy, symbol = '') {
         this.strategy = strategy;
         this.dataLength = data.length;
+        this.symbol = symbol;
+
+        // Get profit multiplier based on symbol type
+        this.profitMultiplier = typeof getProfitMultiplier === 'function'
+            ? getProfitMultiplier(symbol)
+            : 10000; // Default to standard forex
 
         // Use typed arrays for performance
         this.open = new Float64Array(data.length);
@@ -43,7 +49,7 @@ class Backtester {
                 if (position.type === 'BUY' && this.checkSellSignal(i)) {
                     // Close BUY and open SELL
                     const closePrice = this.close[i];
-                    const profit = closePrice - position.entry;
+                    const profit = (closePrice - position.entry) * this.profitMultiplier;
                     balance += profit;
                     trades.push({
                         type: 'BUY',
@@ -60,7 +66,7 @@ class Backtester {
                 } else if (position.type === 'SELL' && this.checkBuySignal(i)) {
                     // Close SELL and open BUY
                     const closePrice = this.close[i];
-                    const profit = position.entry - closePrice;
+                    const profit = (position.entry - closePrice) * this.profitMultiplier;
                     balance += profit;
                     trades.push({
                         type: 'SELL',
@@ -101,7 +107,7 @@ class Backtester {
         // Close any open position at the end
         if (position) {
             const exitPrice = this.close[this.dataLength - 1];
-            const profit = exitPrice - position.entry;
+            const profit = (exitPrice - position.entry) * this.profitMultiplier;
             balance += profit;
             trades.push({
                 type: 'BUY',
@@ -266,7 +272,7 @@ class Backtester {
                     type: position.type,
                     entry: position.entry,
                     exit: position.tp,
-                    profit: position.tp - position.entry,
+                    profit: (position.tp - position.entry) * this.profitMultiplier,
                     reason: 'take_profit',
                     openTime: position.openTime,
                     closeTime: this.time[index]
@@ -278,7 +284,7 @@ class Backtester {
                     type: position.type,
                     entry: position.entry,
                     exit: position.sl,
-                    profit: position.sl - position.entry,
+                    profit: (position.sl - position.entry) * this.profitMultiplier,
                     reason: 'stop_loss',
                     openTime: position.openTime,
                     closeTime: this.time[index]
@@ -291,7 +297,7 @@ class Backtester {
                     type: position.type,
                     entry: position.entry,
                     exit: position.tp,
-                    profit: position.entry - position.tp,
+                    profit: (position.entry - position.tp) * this.profitMultiplier,
                     reason: 'take_profit',
                     openTime: position.openTime,
                     closeTime: this.time[index]
@@ -303,7 +309,7 @@ class Backtester {
                     type: position.type,
                     entry: position.entry,
                     exit: position.sl,
-                    profit: position.entry - position.sl,
+                    profit: (position.entry - position.sl) * this.profitMultiplier,
                     reason: 'stop_loss',
                     openTime: position.openTime,
                     closeTime: this.time[index]
