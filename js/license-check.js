@@ -6,8 +6,12 @@
 (function () {
     'use strict';
 
-    // Check license immediately when script loads
-    checkLicense();
+    // Wait for DOM to be ready, then check license
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', checkLicense);
+    } else {
+        checkLicense();
+    }
 
     /**
      * Main license check function
@@ -134,18 +138,38 @@
     }
 
     /**
-     * Display license info in console (for debugging)
+     * Display license info in header
      */
     function displayLicenseInfo(license) {
         console.log('%c License Information ', 'background: #667eea; color: white; font-weight: bold; padding: 5px 10px;');
         console.log('Type:', license.type);
         console.log('Status:', license.status);
 
-        if (license.type === 'limited') {
-            console.log('Expiry Date:', license.expiry_date);
-            console.log('Days Remaining:', license.days_remaining);
-        } else {
-            console.log('Expiry:', 'Never (Lifetime)');
+        const licenseInfoDiv = document.getElementById('license-info');
+
+        if (licenseInfoDiv) {
+            let infoHTML = '';
+
+            if (license.type === 'lifetime') {
+                infoHTML = '🔓 <strong>Lifetime License</strong> | Valid Forever';
+                console.log('Expiry:', 'Never (Lifetime)');
+            } else if (license.type === 'limited') {
+                const expiryDate = new Date(license.expiry_date);
+                const now = new Date();
+                const daysRemaining = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+                const expiryStr = expiryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+                if (daysRemaining <= 7) {
+                    infoHTML = `⚠️ <strong>Time-Limited License</strong> | Expires: ${expiryStr} (<span style="color: #ffeb3b;">${daysRemaining} days left</span>)`;
+                } else {
+                    infoHTML = `🔓 <strong>Time-Limited License</strong> | Expires: ${expiryStr} (${daysRemaining} days left)`;
+                }
+
+                console.log('Expiry Date:', license.expiry_date);
+                console.log('Days Remaining:', daysRemaining);
+            }
+
+            licenseInfoDiv.innerHTML = infoHTML;
         }
     }
 
