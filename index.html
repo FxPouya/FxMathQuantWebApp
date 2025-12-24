@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FxMathQuant Strategy Generator - AI-Powered Trading Strategies</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- PapaParse for CSV -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <!-- License Check (must load first) -->
+    <script src="js/license-check.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>FxMathQuant</h1>
+                    <span class="subtitle">AI Strategy Generator</span>
+                </div>
+                <div class="header-actions">
+                    <button id="theme-toggle" class="btn-icon" title="Toggle Theme">
+                        <span class="icon">🌙</span>
+                    </button>
+                    <button id="logout-btn" class="btn-icon" title="Logout" onclick="logoutLicense()"
+                        style="margin-left: 10px;">
+                        <span class="icon">🚪</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Step 1: Upload Data -->
+            <section id="upload-section" class="section active">
+                <div class="section-header">
+                    <h2>Step 1: Upload OHLC Data</h2>
+                    <p>Upload CSV file exported from MT4/MT5 (Time, Open, High, Low, Close)</p>
+                </div>
+
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon">📁</div>
+                    <h3>Drag & Drop CSV File</h3>
+                    <p>or click to browse</p>
+                    <input type="file" id="file-input" accept=".csv" hidden>
+                    <button class="btn-primary" id="browse-btn">Browse Files</button>
+                </div>
+
+                <!-- DataProvider Download Links -->
+                <div
+                    style="text-align: center; margin-top: 20px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
+                    <p style="margin-bottom: 10px; font-weight: 600;">📥 Need to export data from MT4/MT5?</p>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <a href="downloads/FxMathQuant_DataExporter_MT4.ex4" download class="btn-secondary"
+                            style="text-decoration: none; padding: 8px 16px; background: #667eea; color: white; border-radius: 6px; font-size: 14px;">
+                            📊 Download MT4 EA
+                        </a>
+                        <a href="downloads/FxMathQuant_DataExporter_MT5.ex5" download class="btn-secondary"
+                            style="text-decoration: none; padding: 8px 16px; background: #667eea; color: white; border-radius: 6px; font-size: 14px;">
+                            📊 Download MT5 EA
+                        </a>
+                        <a href="downloads/README.md" download class="btn-secondary"
+                            style="text-decoration: none; padding: 8px 16px; background: #764ba2; color: white; border-radius: 6px; font-size: 14px;">
+                            📖 EA Guide
+                        </a>
+                        <a href="manual.html" target="_blank" class="btn-secondary"
+                            style="text-decoration: none; padding: 8px 16px; background: #28a745; color: white; border-radius: 6px; font-size: 14px;">
+                            📚 User Manual
+                        </a>
+                    </div>
+                </div>
+
+                <div id="data-preview" class="data-preview hidden">
+                    <h3>Data Preview</h3>
+                    <div class="data-info">
+                        <span id="data-symbol">Symbol: -</span>
+                        <span id="data-bars">Bars: -</span>
+                        <span id="data-timeframe">Timeframe: -</span>
+                    </div>
+                    <div class="table-container">
+                        <table id="preview-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Open</th>
+                                    <th>High</th>
+                                    <th>Low</th>
+                                    <th>Close</th>
+                                </tr>
+                            </thead>
+                            <tbody id="preview-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Data Size Limit (bars)</label>
+                        <select id="data-size-limit" class="form-select">
+                            <option value="0">Use All Data</option>
+                            <option value="1000">Last 1,000 bars</option>
+                            <option value="2000">Last 2,000 bars</option>
+                            <option value="5000" selected>Last 5,000 bars (Recommended)</option>
+                            <option value="10000">Last 10,000 bars</option>
+                        </select>
+                        <small>Limit data size for faster processing. Recommended: 5,000 bars</small>
+                    </div>
+                    <button class="btn-success" id="continue-btn">Continue to Configuration →</button>
+                </div>
+            </section>
+
+            <!-- Step 2: Configure GA -->
+            <section id="config-section" class="section">
+                <div class="section-header">
+                    <h2>Step 2: Configure Genetic Algorithm</h2>
+                    <p>Set parameters for strategy generation</p>
+                </div>
+
+                <div class="config-grid">
+                    <!-- GA Parameters -->
+                    <div class="config-card">
+                        <h3>GA Parameters</h3>
+                        <div class="form-group">
+                            <label>Population Size</label>
+                            <input type="number" id="population" value="100" min="50" max="500">
+                            <small>Number of strategies per generation (50-500)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Generations</label>
+                            <input type="number" id="generations" value="50" min="10" max="200">
+                            <small>Evolution cycles (10-200)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Strategies to Find</label>
+                            <input type="number" id="strategies-count" value="5" min="1" max="20">
+                            <small>Target number of strategies (1-20)</small>
+                        </div>
+                    </div>
+
+                    <!-- Rule Configuration -->
+                    <div class="config-card">
+                        <h3>Rule Configuration</h3>
+                        <div class="form-group">
+                            <label>Rules per Strategy</label>
+                            <div class="range-inputs">
+                                <input type="number" id="rules-min" value="3" min="1" max="10">
+                                <span>to</span>
+                                <input type="number" id="rules-max" value="8" min="1" max="10">
+                            </div>
+                            <small>Number of conditions (1-10)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Lookback Period</label>
+                            <div class="range-inputs">
+                                <input type="number" id="shift-min" value="1" min="1" max="20">
+                                <span>to</span>
+                                <input type="number" id="shift-max" value="10" min="1" max="20">
+                            </div>
+                            <small>Bars to look back (1-20)</small>
+                        </div>
+                    </div>
+
+                    <!-- Performance Filters -->
+                    <div class="config-card">
+                        <h3>Performance Filters</h3>
+                        <div class="form-group">
+                            <label>Min Profit Factor</label>
+                            <input type="number" id="min-pf" value="1.5" step="0.1" min="1.0" max="5.0">
+                            <small>Minimum PF required (1.0-5.0)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Min Win Rate (%)</label>
+                            <input type="number" id="min-wr" value="45" min="30" max="80">
+                            <small>Minimum win rate (30-80%)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Max Drawdown (%)</label>
+                            <input type="number" id="max-dd" value="25" min="5" max="50">
+                            <small>Maximum acceptable DD (5-50%)</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Min Trades</label>
+                            <input type="number" id="min-trades" value="30" min="10" max="200">
+                            <small>Minimum trade count (10-200)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="back-btn">← Back to Upload</button>
+                    <button class="btn-success" id="start-btn">Start Generation 🚀</button>
+                </div>
+            </section>
+
+            <!-- Step 3: Generation Progress -->
+            <section id="progress-section" class="section">
+                <div class="section-header">
+                    <h2>Step 3: Generating Strategies</h2>
+                    <p>AI is evolving profitable trading strategies...</p>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-stats">
+                        <div class="stat-card">
+                            <span class="stat-label">Current Generation</span>
+                            <span class="stat-value" id="current-gen">0 / 0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Best Fitness</span>
+                            <span class="stat-value" id="best-fitness">0.00</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Strategies Found</span>
+                            <span class="stat-value" id="found-count">0 / 0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Elapsed Time</span>
+                            <span class="stat-value" id="elapsed-time">0s</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+
+                    <div class="progress-log" id="progress-log"></div>
+
+                    <button class="btn-danger" id="stop-btn">Stop Generation</button>
+                </div>
+            </section>
+
+            <!-- Step 4: Results -->
+            <section id="results-section" class="section">
+                <div class="section-header">
+                    <h2>Step 4: Generated Strategies</h2>
+                    <p>Your AI-discovered trading strategies are ready!</p>
+                </div>
+
+                <div id="strategies-grid" class="strategies-grid"></div>
+
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="new-search-btn">← New Search</button>
+                    <button class="btn-primary" id="compare-btn">Compare Selected (0)</button>
+                    <button class="btn-success" id="download-all-btn">Download All Strategies</button>
+                </div>
+
+                <!-- Comparison Results Area (Hidden by default) -->
+                <div id="comparison-section" class="hidden"
+                    style="margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border-color);">
+                    <div class="section-header">
+                        <h2>Strategy Comparison</h2>
+                        <p>Side-by-side performance analysis</p>
+                    </div>
+                    <div id="comparison-container" class="comparison-container"></div>
+                    <div class="action-buttons">
+                        <button class="btn-secondary" onclick="hideComparison()">Close Comparison</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 FxMathQuant. All rights reserved. | AI-Powered Trading Strategy Generator</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/strategy.js"></script>
+    <script src="js/backtester.js"></script>
+    <script src="js/ga-engine.js"></script>
+    <script src="js/rule-parser.js"></script>
+    <script src="js/mq4-converter.js"></script>
+    <script src="js/mq5-converter.js"></script>
+    <script src="js/ctrader-converter.js"></script>
+    <script src="js/pine-converter.js"></script>
+    <script src="js/mq4-generator.js"></script>
+    <script src="js/mq5-generator.js"></script>
+    <script src="js/report-generator.js"></script>
+    <script src="js/strategy-details.js"></script>
+    <script src="js/html-report-generator.js"></script>
+    <script src="js/ui-controller.js"></script>
+    <script src="js/main.js?v=2.0"></script>
+</body>
+
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FxMathQuant User Manual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-left: 4px solid #764ba2;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #555;
+            font-size: 1.3em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul,
+        ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            color: #1976d2;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            color: #e65100;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .toc {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .contact-box a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📚 FxMathQuant User Manual</h1>
+        <p><strong>AI-Powered Trading Strategy Generator</strong></p>
+
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ol>
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#license">License Activation</a></li>
+                <li><a href="#export">Exporting Data from MT4/MT5</a></li>
+                <li><a href="#upload">Uploading Data</a></li>
+                <li><a href="#config">Configuring Strategy Generation</a></li>
+                <li><a href="#generate">Generating Strategies</a></li>
+                <li><a href="#results">Viewing Results</a></li>
+                <li><a href="#download">Downloading Strategies</a></li>
+                <li><a href="#troubleshoot">Troubleshooting</a></li>
+                <li><a href="#support">Contact Support</a></li>
+            </ol>
+        </div>
+
+        <h2 id="getting-started">🚀 Getting Started</h2>
+        <h3>What is FxMathQuant?</h3>
+        <p>FxMathQuant is an AI-powered trading strategy generator that uses genetic algorithms to discover profitable
+            trading strategies from your historical price data.</p>
+
+        <h3>System Requirements</h3>
+        <ul>
+            <li><strong>Web Browser</strong>: Chrome, Firefox, Safari, or Edge (latest version)</li>
+            <li><strong>MetaTrader</strong>: MT4 or MT5 (for data export)</li>
+            <li><strong>License Key</strong>: Required for access</li>
+        </ul>
+
+        <h2 id="license">🔑 License Activation</h2>
+        <h3>Step 1: Obtain License Key</h3>
+        <p>Purchase a license from:</p>
+        <ul>
+            <li><strong>Email</strong>: <a href="mailto:fxmathsolution@gmail.com">fxmathsolution@gmail.com</a></li>
+            <li><strong>Telegram</strong>: <a href="https://t.me/FxMath" target="_blank">https://t.me/FxMath</a></li>
+        </ul>
+
+        <h3>Step 2: Activate License</h3>
+        <ol>
+            <li>Open the application in your web browser</li>
+            <li>Enter your license key in the format: <code>XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX</code></li>
+            <li>Click "Activate License"</li>
+            <li>Wait for validation (requires internet connection)</li>
+            <li>You'll be redirected to the main application</li>
+        </ol>
+
+        <div class="alert alert-info">
+            <strong>Session Duration:</strong> Your session remains active until you logout or clear browser data. There
+            is no automatic logout.
+        </div>
+
+        <h2 id="export">📊 Exporting Data from MT4/MT5</h2>
+        <h3>Download Data Provider EA</h3>
+        <p>Download the EA from the application:</p>
+        <ul>
+            <li><strong>MT4</strong>: <code>FxMathQuant_DataExporter_MT4.ex4</code></li>
+            <li><strong>MT5</strong>: <code>FxMathQuant_DataExporter_MT5.ex5</code></li>
+        </ul>
+
+        <h3>Export Historical Data</h3>
+        <ol>
+            <li>Open a chart (e.g., XAUUSD H1)</li>
+            <li>Drag the EA onto the chart</li>
+            <li>Configure settings:
+                <ul>
+                    <li><strong>Bars to Export</strong>: 10,000 (recommended)</li>
+                    <li><strong>Remove Suffix</strong>: true</li>
+                    <li><strong>Export Folder</strong>: FxMathQuant</li>
+                </ul>
+            </li>
+            <li>Click "Export to CSV" button</li>
+            <li>Wait for completion message</li>
+            <li>Find your file: <code>MQL4/Files/FxMathQuant/XAUUSD_H1.csv</code></li>
+        </ol>
+
+        <h3>Recommended Data</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timeframe</th>
+                    <th>Bars</th>
+                    <th>Use Case</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>M15</td>
+                    <td>10,000</td>
+                    <td>Scalping strategies</td>
+                </tr>
+                <tr>
+                    <td>H1</td>
+                    <td>10,000</td>
+                    <td>Intraday trading</td>
+                </tr>
+                <tr>
+                    <td>H4</td>
+                    <td>5,000</td>
+                    <td>Swing trading</td>
+                </tr>
+                <tr>
+                    <td>D1</td>
+                    <td>3,000</td>
+                    <td>Position trading</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="upload">📤 Uploading Data</h2>
+        <ol>
+            <li>Click "Browse" or drag-and-drop your CSV file</li>
+            <li>Select the file exported from MT4/MT5</li>
+            <li>Wait for parsing (10,000 bars ≈ 2-3 seconds)</li>
+            <li>Confirmation: "Data loaded successfully: X bars"</li>
+        </ol>
+
+        <h2 id="config">⚙️ Configuring Strategy Generation</h2>
+        <h3>Genetic Algorithm Settings</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Default</th>
+                    <th>Range</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Population Size</td>
+                    <td>100</td>
+                    <td>50-500</td>
+                    <td>Number of strategies per generation</td>
+                </tr>
+                <tr>
+                    <td>Generations</td>
+                    <td>50</td>
+                    <td>10-200</td>
+                    <td>Number of evolution cycles</td>
+                </tr>
+                <tr>
+                    <td>Mutation Rate</td>
+                    <td>0.1</td>
+                    <td>0.01-0.5</td>
+                    <td>Probability of random changes</td>
+                </tr>
+                <tr>
+                    <td>Crossover Rate</td>
+                    <td>0.7</td>
+                    <td>0.3-0.9</td>
+                    <td>Probability of combining strategies</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="generate">🎯 Generating Strategies</h2>
+        <ol>
+            <li>Review your settings</li>
+            <li>Click "Start Generation"</li>
+            <li>Monitor progress (current generation, strategies found, best fitness)</li>
+            <li>Wait for completion (30 seconds to 5 minutes)</li>
+        </ol>
+
+        <h2 id="results">📈 Viewing Results</h2>
+        <p>Each strategy shows:</p>
+        <ul>
+            <li><strong>Profit Factor</strong>: Ratio of gross profit to gross loss</li>
+            <li><strong>Win Rate</strong>: Percentage of winning trades</li>
+            <li><strong>Total Trades</strong>: Number of trades executed</li>
+            <li><strong>Net Profit</strong>: Total profit in currency</li>
+            <li><strong>Max Drawdown</strong>: Largest equity drop</li>
+        </ul>
+
+        <p>Click "View Details" to see:</p>
+        <ul>
+            <li>Performance Metrics</li>
+            <li>BUY/SELL Rules</li>
+            <li>Equity Curve Chart</li>
+            <li>Hourly Performance</li>
+            <li>Complete Trade Statement</li>
+        </ul>
+
+        <h2 id="download">💾 Downloading Strategies</h2>
+        <h3>Available Formats</h3>
+        <ul>
+            <li><strong>MetaTrader 4 (.mq4)</strong> - For MT4 platform</li>
+            <li><strong>MetaTrader 5 (.mq5)</strong> - For MT5 platform</li>
+            <li><strong>cTrader (.cs)</strong> - For cTrader platform</li>
+            <li><strong>TradingView (Pine Script)</strong> - For TradingView</li>
+            <li><strong>HTML Report</strong> - Comprehensive performance report</li>
+            <li><strong>JSON Data</strong> - Raw strategy data</li>
+        </ul>
+
+        <h2 id="troubleshoot">🐛 Troubleshooting</h2>
+
+        <h3>CSV Upload Issues</h3>
+        <div class="alert alert-warning">
+            <strong>Error:</strong> "CSV must contain: time, open, high, low, close columns"<br>
+            <strong>Solution:</strong> Ensure CSV has required columns. Column names can be lowercase or capitalized.
+        </div>
+
+        <h3>License Issues</h3>
+        <div class="alert alert-warning">
+            <strong>Error:</strong> "Invalid license key"<br>
+            <strong>Solution:</strong> Check key format (32 characters with dashes). Copy-paste from email.
+        </div>
+
+        <h3>Generation Issues</h3>
+        <div class="alert alert-warning">
+            <strong>No strategies found</strong><br>
+            <strong>Solution:</strong> Relax criteria (lower Min Profit Factor, Win Rate). Increase population size and
+            generations.
+        </div>
+
+        <h2 id="support">📞 Contact Support</h2>
+
+        <div class="contact-box">
+            <h3>Get Help</h3>
+            <p><strong>📧 Email:</strong> <a href="mailto:fxmathsolution@gmail.com">fxmathsolution@gmail.com</a></p>
+            <p><strong>💬 Telegram:</strong> <a href="https://t.me/FxMath" target="_blank">https://t.me/FxMath</a></p>
+            <p style="margin-top: 15px; font-size: 0.9em;">Response time: 24-48 hours via email, faster on Telegram</p>
+        </div>
+
+        <div class="alert alert-info" style="margin-top: 30px;">
+            <strong>⚠️ Disclaimer:</strong> Past performance does not guarantee future results. Always test strategies
+            on demo account first. Use proper risk management.
+        </div>
+
+        <p style="text-align: center; margin-top: 30px; color: #999; font-size: 0.9em;">
+            © 2025 FxMath Solution. All rights reserved.
+        </p>
+    </div>
+</body>
+
+</html>
