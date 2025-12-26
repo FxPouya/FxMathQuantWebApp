@@ -192,6 +192,7 @@
                 <li><a href="#upload">Uploading Data</a></li>
                 <li><a href="#config">Configuring Strategy Generation</a></li>
                 <li><a href="#walkforward">Walk-Forward Analysis</a></li>
+                <li><a href="#montecarlo">Monte Carlo Simulation</a></li>
                 <li><a href="#generate">Generating Strategies</a></li>
                 <li><a href="#results">Viewing Results</a></li>
                 <li><a href="#download">Downloading Strategies</a></li>
@@ -435,6 +436,162 @@
             <li><strong>Result:</strong> GA naturally evolves toward robust, non-overfitted strategies</li>
         </ul>
 
+        <h3 id="montecarlo">🎲 Monte Carlo Simulation</h3>
+        <p>Monte Carlo simulation is a powerful risk analysis tool that tests strategy robustness by randomly shuffling
+            the order of trades thousands of times.</p>
+
+        <div class="alert alert-info">
+            <strong>Why Use Monte Carlo?</strong> It reveals whether your strategy's performance is due to genuine edge
+            or just lucky trade sequencing. A robust strategy should show consistent positive returns across most
+            simulations.
+        </div>
+
+        <h4>How It Works</h4>
+        <ol>
+            <li><strong>Trade Extraction:</strong> All trades from the backtest are collected</li>
+            <li><strong>Random Shuffling:</strong> Trades are randomly reordered (Fisher-Yates algorithm)</li>
+            <li><strong>Equity Calculation:</strong> Account balance is recalculated for each shuffle</li>
+            <li><strong>Statistical Analysis:</strong> Results are analyzed across thousands of iterations</li>
+            <li><strong>Risk Assessment:</strong> Probability distributions and risk metrics are calculated</li>
+        </ol>
+
+        <h4>Configuration</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Default</th>
+                    <th>Range</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Enable Monte Carlo</td>
+                    <td>Off</td>
+                    <td>On/Off</td>
+                    <td>Activate Monte Carlo analysis</td>
+                </tr>
+                <tr>
+                    <td>Iterations</td>
+                    <td>1,000</td>
+                    <td>100-10,000</td>
+                    <td>Number of random shuffles</td>
+                </tr>
+                <tr>
+                    <td>Risk of Ruin Threshold</td>
+                    <td>20%</td>
+                    <td>10-50%</td>
+                    <td>Loss threshold for RoR calculation</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Recommended Settings</h4>
+        <ul>
+            <li><strong>Quick Analysis:</strong> 1,000 iterations (1-2 seconds)</li>
+            <li><strong>Standard Analysis:</strong> 5,000 iterations (3-4 seconds)</li>
+            <li><strong>Thorough Analysis:</strong> 10,000 iterations (6-8 seconds)</li>
+        </ul>
+
+        <h4>Requirements</h4>
+        <ul>
+            <li>Minimum 20 trades for meaningful results</li>
+            <li>More trades = more accurate analysis</li>
+            <li>Enable before generating strategies</li>
+        </ul>
+
+        <h4>Understanding the Results</h4>
+        <p>When you click the "🎲 MC" button on a strategy card, a professional modal displays:</p>
+
+        <h5>Risk Assessment Banner</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th>Risk Level</th>
+                    <th>RoR Range</th>
+                    <th>Meaning</th>
+                    <th>Recommendation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>✅ LOW RISK</td>
+                    <td>&lt; 5%</td>
+                    <td>Excellent robustness</td>
+                    <td>Safe to trade</td>
+                </tr>
+                <tr>
+                    <td>⚠️ MODERATE RISK</td>
+                    <td>5-15%</td>
+                    <td>Acceptable variability</td>
+                    <td>Monitor closely</td>
+                </tr>
+                <tr>
+                    <td>❌ HIGH RISK</td>
+                    <td>&gt; 15%</td>
+                    <td>High variance</td>
+                    <td>Reduce position size</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h5>Key Metrics</h5>
+        <ul>
+            <li><strong>Expected Return:</strong> Average outcome across all simulations (more reliable than single
+                backtest)</li>
+            <li><strong>Risk of Ruin:</strong> Probability of losing threshold % of capital (lower is better)</li>
+            <li><strong>Standard Deviation:</strong> Measure of result variability (lower = more consistent)</li>
+            <li><strong>Percentiles:</strong> Distribution of outcomes (5th, 25th, 50th, 75th, 95th)</li>
+            <li><strong>Confidence Intervals:</strong> Range where 90% or 50% of outcomes fall</li>
+        </ul>
+
+        <h5>Equity Distribution Histogram</h5>
+        <p>The histogram shows the distribution of final equity with color-coded bars:</p>
+        <ul>
+            <li><strong style="color: #f56565;">Red bars:</strong> Worst 5% of outcomes (below 5th percentile)</li>
+            <li><strong style="color: #ed8936;">Orange bars:</strong> Below average (5th-25th percentile)</li>
+            <li><strong style="color: #48bb78;">Green bars:</strong> Typical range (25th-75th percentile)</li>
+            <li><strong style="color: #38b2ac;">Teal bars:</strong> Best outcomes (above 75th percentile)</li>
+        </ul>
+
+        <h5>What to Look For</h5>
+        <ul>
+            <li><strong>Normal distribution:</strong> Bell curve shape is ideal</li>
+            <li><strong>Narrow spread:</strong> Consistent results (safer)</li>
+            <li><strong>Positive 5th percentile:</strong> Even worst case is profitable</li>
+            <li><strong>Low RoR:</strong> Less than 10% is good, less than 5% is excellent</li>
+        </ul>
+
+        <div class="alert alert-warning">
+            <strong>Warning Signs:</strong> Very wide distribution, negative 25th percentile, high risk of ruin (&gt;
+            20%), or bimodal distribution (two peaks) indicate a risky strategy.
+        </div>
+
+        <h4>Best Practices</h4>
+        <h5>Before Trading:</h5>
+        <ul>
+            <li>Run Monte Carlo on all strategies</li>
+            <li>Only trade strategies with RoR &lt; 10%</li>
+            <li>Check 5th percentile is acceptable</li>
+            <li>Verify normal distribution shape</li>
+        </ul>
+
+        <h5>Position Sizing:</h5>
+        <ul>
+            <li><strong>Low Risk (&lt; 5% RoR):</strong> Standard position size</li>
+            <li><strong>Moderate Risk (5-15% RoR):</strong> Reduce position by 50%</li>
+            <li><strong>High Risk (&gt; 15% RoR):</strong> Avoid or use micro lots</li>
+        </ul>
+
+        <h5>Ongoing Monitoring:</h5>
+        <ul>
+            <li>Re-run Monte Carlo monthly with fresh data</li>
+            <li>Compare live results to MC predictions</li>
+            <li>Stop trading if results fall below 5th percentile</li>
+            <li>Adjust position size based on actual variance</li>
+        </ul>
+
         <h2 id="generate">🎯 Generating Strategies</h2>
         <ol>
             <li>Review your settings</li>
@@ -500,6 +657,8 @@
             <h3>Get Help</h3>
             <p><strong>📧 Email:</strong> <a href="mailto:fxmathsolution@gmail.com">fxmathsolution@gmail.com</a></p>
             <p><strong>💬 Telegram:</strong> <a href="https://t.me/FxMath" target="_blank">https://t.me/FxMath</a></p>
+            <p><strong>👥 Telegram Group:</strong> <a href="https://t.me/FxMathQuant"
+                    target="_blank">https://t.me/FxMathQuant</a></p>
             <p style="margin-top: 15px; font-size: 0.9em;">Response time: 24-48 hours via email, faster on Telegram</p>
         </div>
 

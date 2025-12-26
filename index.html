@@ -234,6 +234,30 @@
                             <small>Higher ratio = more data for training, less for validation</small>
                         </div>
                     </div>
+
+                    <!-- Monte Carlo Simulation -->
+                    <div class="config-card">
+                        <h3>🎲 Monte Carlo Simulation</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enable-montecarlo" onchange="toggleMonteCarloSettings()">
+                                Enable Monte Carlo Analysis
+                            </label>
+                            <small>Analyze strategy robustness through trade randomization</small>
+                        </div>
+                        <div class="form-group hidden" id="montecarlo-settings">
+                            <label>Iterations: <span id="mc-iterations-value">1000</span></label>
+                            <input type="range" id="mc-iterations" min="100" max="10000" step="100" value="1000"
+                                oninput="updateMonteCarloSettings()">
+                            <small>Higher iterations = more accurate results (slower)</small>
+
+                            <label style="margin-top: 15px;">Risk of Ruin Threshold: <span
+                                    id="ror-threshold-value">20</span>%</label>
+                            <input type="range" id="ror-threshold" min="10" max="50" step="5" value="20"
+                                oninput="updateMonteCarloSettings()">
+                            <small>Probability of losing this % of capital</small>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="action-buttons">
@@ -323,6 +347,8 @@
     <script src="js/strategy.js?v=2.2"></script>
     <script src="js/backtester.js"></script>
     <script src="js/walk-forward.js"></script>
+    <script src="js/monte-carlo.js?v=2.7"></script>
+    <script src="js/monte-carlo-modal.js?v=2.7"></script>
     <script src="js/ga-engine.js?v=2.2"></script>
     <script src="js/rule-parser.js?v=2.1"></script>
     <script src="js/mq4-converter.js?v=2.1"></script>
@@ -335,7 +361,7 @@
     <script src="js/strategy-details.js?v=2.1"></script>
     <script src="js/html-report-generator.js?v=2.1"></script>
     <script src="js/ui-controller.js?v=2.1"></script>
-    <script src="js/main.js?v=2.1"></script>
+    <script src="js/main.js?v=2.7"></script>
 </body>
 
 </html>

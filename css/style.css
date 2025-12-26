@@ -986,3 +986,395 @@ tbody tr:hover {
         align-items: stretch;
     }
 }
+/* ===================================
+   Monte Carlo Simulation Styles
+   =================================== */
+
+/* Monte Carlo Summary Cards */
+.mc-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.mc-stat-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mc-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mc-stat-card h4 {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mc-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin: 0;
+}
+
+/* Risk level colors */
+.mc-value.good { color: var(--accent-success); }
+.mc-value.warning { color: var(--accent-warning); }
+.mc-value.bad { color: var(--accent-danger); }
+
+/* Monte Carlo Histogram */
+#mc-histogram {
+    width: 100%;
+    height: 300px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+/* Monte Carlo Statistics Table */
+.mc-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.mc-stats-table th,
+.mc-stats-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mc-stats-table th {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mc-stats-table td {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.mc-stats-table tr:last-child td { border-bottom: none; }
+.mc-stats-table tr:hover { background: rgba(102, 126, 234, 0.05); }
+
+/* Monte Carlo Tab Content */
+#montecarlo-tab { padding: 20px; }
+
+/* Monte Carlo Settings */
+#montecarlo-settings { margin-top: 15px; }
+#montecarlo-settings label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+#montecarlo-settings input[type="range"] {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+#montecarlo-settings small {
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* Responsive Monte Carlo */
+@media (max-width: 768px) {
+    .mc-summary { grid-template-columns: 1fr; }
+    .mc-value { font-size: 1.5em; }
+    #mc-histogram { height: 250px; }
+}
+
+/* Monte Carlo Button Style */
+.btn-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.btn-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+}
+
+.btn-info:active {
+    transform: translateY(0);
+}
+
+/* ===== MONTE CARLO MODAL STYLES ===== */
+
+/* Monte Carlo Strategy Info */
+.mc-strategy-info {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mc-strategy-info h3 {
+    margin: 0 0 5px 0;
+    color: var(--text-primary);
+}
+
+.mc-strategy-info p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+/* Risk Assessment Banner */
+.mc-risk-banner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    border: 2px solid;
+}
+
+.mc-risk-banner.mc-good {
+    background: rgba(72, 187, 120, 0.1);
+    border-color: var(--accent-success);
+}
+
+.mc-risk-banner.mc-warning {
+    background: rgba(237, 137, 54, 0.1);
+    border-color: var(--accent-warning);
+}
+
+.mc-risk-banner.mc-bad {
+    background: rgba(245, 101, 101, 0.1);
+    border-color: var(--accent-danger);
+}
+
+.mc-risk-icon {
+    font-size: 48px;
+    line-height: 1;
+}
+
+.mc-risk-content h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+}
+
+.mc-risk-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Summary Statistics Cards */
+.mc-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.mc-stat-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mc-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mc-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.mc-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+.mc-value.positive {
+    color: var(--accent-success);
+}
+
+.mc-value.negative {
+    color: var(--accent-danger);
+}
+
+.mc-value.mc-good {
+    color: var(--accent-success);
+}
+
+.mc-value.mc-warning {
+    color: var(--accent-warning);
+}
+
+.mc-value.mc-bad {
+    color: var(--accent-danger);
+}
+
+.mc-sublabel {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Percentile Table */
+.mc-percentiles {
+    margin: 30px 0;
+}
+
+.mc-percentiles h3 {
+    margin-bottom: 15px;
+}
+
+.mc-percentile-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.mc-percentile-table thead {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.mc-percentile-table th,
+.mc-percentile-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mc-percentile-table th {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mc-percentile-table td {
+    color: var(--text-secondary);
+}
+
+.mc-percentile-table tr.highlight-row {
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.mc-percentile-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Confidence Intervals */
+.mc-confidence {
+    margin: 30px 0;
+}
+
+.mc-confidence h3 {
+    margin-bottom: 15px;
+}
+
+.mc-confidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.mc-confidence-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.mc-confidence-label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.mc-confidence-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-primary);
+    margin-bottom: 8px;
+}
+
+.mc-confidence-sublabel {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Explanation Box */
+.mc-explanation {
+    background: rgba(102, 126, 234, 0.05);
+    border-left: 4px solid var(--accent-primary);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.mc-explanation h4 {
+    margin: 0 0 10px 0;
+    color: var(--text-primary);
+}
+
+.mc-explanation p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .mc-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .mc-confidence-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .mc-risk-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+}

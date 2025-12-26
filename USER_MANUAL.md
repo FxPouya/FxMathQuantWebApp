@@ -11,11 +11,12 @@
 3. [Exporting Data from MT4/MT5](#exporting-data)
 4. [Uploading Data](#uploading-data)
 5. [Configuring Strategy Generation](#configuration)
-6. [Generating Strategies](#generation)
-7. [Viewing Results](#results)
-8. [Downloading Strategies](#downloading)
-9. [Troubleshooting](#troubleshooting)
-10. [Contact Support](#support)
+6. [Understanding Monte Carlo Results](#understanding-monte-carlo-results)
+7. [Generating Strategies](#generation)
+8. [Viewing Results](#results)
+9. [Downloading Strategies](#downloading)
+10. [Troubleshooting](#troubleshooting)
+11. [Contact Support](#support)
 
 ---
 
@@ -154,7 +155,160 @@ Time,Open,High,Low,Close,Tick_Volume,Spread,Real_Volume
 - Min Profit Factor: 2.0
 - Min Win Rate: 55%
 
+### Monte Carlo Simulation
+
+**What is Monte Carlo Simulation?**
+
+Monte Carlo simulation is a powerful risk analysis tool that tests strategy robustness by randomly shuffling the order of trades thousands of times. This reveals whether your strategy's performance is due to genuine edge or just lucky trade sequencing.
+
+**Why Use Monte Carlo?**
+
+- **Risk Assessment**: Understand the range of possible outcomes
+- **Robustness Testing**: Verify strategy works under different conditions
+- **Confidence Intervals**: Know the probability of different results
+- **Risk of Ruin**: Calculate probability of catastrophic losses
+
+**Settings:**
+
+| Parameter | Default | Range | Description |
+|-----------|---------|-------|-------------|
+| **Enable Monte Carlo** | Off | On/Off | Activate Monte Carlo analysis |
+| **Iterations** | 1,000 | 100-10,000 | Number of random shuffles |
+| **Risk of Ruin Threshold** | 20% | 10-50% | Loss threshold for RoR calculation |
+
+**Recommended Settings:**
+
+- **Quick Analysis**: 1,000 iterations (1-2 seconds)
+- **Standard Analysis**: 5,000 iterations (3-4 seconds)
+- **Thorough Analysis**: 10,000 iterations (6-8 seconds)
+
+**Requirements:**
+
+- Minimum 20 trades for meaningful results
+- More trades = more accurate analysis
+- Enable before generating strategies
+
+**How to Use:**
+
+1. **Enable Monte Carlo** in configuration section
+2. **Set iterations** (1,000 recommended for start)
+3. **Generate strategies** as normal
+4. **Click "🎲 MC" button** on any strategy card
+5. **View professional modal** with:
+   - Equity distribution histogram
+   - Risk assessment
+   - Percentile analysis
+   - Confidence intervals
+
 ---
+
+## 📊 Understanding Monte Carlo Results
+
+### Risk Assessment Banner
+
+The modal displays a color-coded risk assessment:
+
+- **✅ LOW RISK (< 5% RoR)**: Excellent robustness, safe to trade
+- **⚠️ MODERATE RISK (5-15% RoR)**: Acceptable, monitor closely
+- **❌ HIGH RISK (> 15% RoR)**: High variance, reduce position size
+
+### Key Metrics Explained
+
+**Expected Return**
+- Average outcome across all simulations
+- More reliable than single backtest result
+- Positive value indicates profitable strategy
+
+**Risk of Ruin (RoR)**
+- Probability of losing threshold % of capital
+- Lower is better (< 5% is excellent)
+- Accounts for worst-case scenarios
+
+**Standard Deviation**
+- Measure of result variability
+- Lower = more consistent
+- Higher = more unpredictable
+
+**Percentiles**
+
+| Percentile | Meaning | Use Case |
+|------------|---------|----------|
+| **5th** | Worst 5% of outcomes | Downside risk assessment |
+| **25th** | Below average | Pessimistic scenario |
+| **50th (Median)** | Typical outcome | Most likely result |
+| **75th** | Above average | Optimistic scenario |
+| **95th** | Best 5% of outcomes | Upside potential |
+
+**Confidence Intervals**
+
+- **90% Range**: 90% of outcomes fall within this range
+- **50% Range**: 50% of outcomes fall within this range
+- Narrower range = more predictable strategy
+
+### Equity Distribution Histogram
+
+The histogram shows the distribution of final equity across all simulations:
+
+**Color Coding:**
+- **Red bars**: Worst 5% of outcomes (below 5th percentile)
+- **Orange bars**: Below average (5th-25th percentile)
+- **Green bars**: Typical range (25th-75th percentile)
+- **Teal bars**: Best outcomes (above 75th percentile)
+
+**What to Look For:**
+- **Normal distribution**: Bell curve shape is ideal
+- **Skewed right**: More upside potential
+- **Skewed left**: More downside risk
+- **Wide spread**: High variability (risky)
+- **Narrow spread**: Consistent results (safer)
+
+### Interpreting Results
+
+**Excellent Strategy:**
+- Risk of Ruin < 5%
+- 5th percentile is positive
+- Narrow confidence intervals
+- Normal distribution shape
+
+**Good Strategy:**
+- Risk of Ruin 5-10%
+- 5th percentile near breakeven
+- Moderate confidence intervals
+- Slight positive skew
+
+**Risky Strategy:**
+- Risk of Ruin > 15%
+- 5th percentile is negative
+- Wide confidence intervals
+- High standard deviation
+
+**Warning Signs:**
+- Very wide distribution
+- Negative 25th percentile
+- High risk of ruin (> 20%)
+- Bimodal distribution (two peaks)
+
+### Best Practices
+
+**Before Trading:**
+1. Run Monte Carlo on all strategies
+2. Only trade strategies with RoR < 10%
+3. Check 5th percentile is acceptable
+4. Verify normal distribution
+
+**Position Sizing:**
+- Low Risk (< 5% RoR): Standard position size
+- Moderate Risk (5-15% RoR): Reduce position by 50%
+- High Risk (> 15% RoR): Avoid or use micro lots
+
+**Ongoing Monitoring:**
+- Re-run Monte Carlo monthly
+- Compare live results to MC predictions
+- Stop trading if results fall below 5th percentile
+- Adjust position size based on actual variance
+
+---
+
 
 ## 🎯 Generating Strategies
 
@@ -342,6 +496,11 @@ Click "View Details" to see:
 - Community support
 - Updates and announcements
 
+**Telegram Group**: https://t.me/FxMathQuant
+- Community discussions
+- Share strategies and results
+- Get help from other users
+
 **Website**: https://fxmath.com
 - Documentation
 - Video tutorials
@@ -438,6 +597,6 @@ Please provide:
 
 **Happy Trading! 🎯**
 
-For support: fxmathsolution@gmail.com | https://t.me/FxMath
+For support: fxmathsolution@gmail.com | https://t.me/FxMath | https://t.me/FxMathQuant
 
 © 2025 FxMath Solution. All rights reserved.

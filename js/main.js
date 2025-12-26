@@ -520,6 +520,7 @@ function createStrategyCard(strategy, number) {
         </div>
         <div class="strategy-actions">
             <button class="btn-secondary" onclick="viewStrategyDetails(${number - 1})">View Details</button>
+            <button class="btn-info" onclick="runMonteCarloForStrategy(${number - 1})" title="Run Monte Carlo Simulation">🎲 MC</button>
             <button class="btn-primary" onclick="downloadStrategy(${number - 1}, 'mq4')">MQ4</button>
             <button class="btn-primary" onclick="downloadStrategy(${number - 1}, 'mq5')">MQ5</button>
             <button class="btn-success" onclick="downloadStrategy(${number - 1}, 'report')">Report</button>
@@ -803,6 +804,71 @@ function toggleWalkForwardSettings() {
     }
 }
 
+/**
+ * Update Monte Carlo settings display
+ */
+function updateMonteCarloSettings() {
+    const iterations = parseInt(document.getElementById('mc-iterations').value);
+    const threshold = parseInt(document.getElementById('ror-threshold').value);
+
+    document.getElementById('mc-iterations-value').textContent = iterations.toLocaleString();
+    document.getElementById('ror-threshold-value').textContent = threshold;
+}
+
+/**
+ * Toggle Monte Carlo settings visibility
+ */
+function toggleMonteCarloSettings() {
+    const enabled = document.getElementById('enable-montecarlo').checked;
+    const settings = document.getElementById('montecarlo-settings');
+    if (settings) {
+        settings.classList.toggle('hidden', !enabled);
+    }
+}
+
+/**
+ * Run Monte Carlo analysis for a specific strategy
+ */
+function runMonteCarloForStrategy(index) {
+    const strategy = appData.foundStrategies[index];
+    if (!strategy) {
+        alert('Strategy not found!');
+        return;
+    }
+
+    const mcEnabled = document.getElementById('enable-montecarlo')?.checked;
+    if (!mcEnabled) {
+        alert('Monte Carlo is not enabled!\\n\\nPlease enable it in the settings before generating strategies.');
+        return;
+    }
+
+    const m = strategy.metrics;
+    if (!m.trades || m.trades.length < 20) {
+        alert(`Monte Carlo requires at least 20 trades.\\nThis strategy has ${m.trades?.length || 0} trades.`);
+        return;
+    }
+
+    try {
+        const iterations = parseInt(document.getElementById('mc-iterations').value) || 1000;
+        const rorThreshold = parseInt(document.getElementById('ror-threshold').value) / 100 || 0.2;
+
+        console.log(`🎲 Running Monte Carlo analysis (${iterations} iterations)...`);
+
+        const trades = MonteCarloSimulation.extractTrades(strategy);
+        const mc = new MonteCarloSimulation(trades, iterations, rorThreshold);
+        const results = mc.run();
+
+        strategy.monteCarlo = results;
+
+        // Display results in professional modal with Chart.js visualization
+        displayMonteCarloModal(strategy, index, results);
+
+    } catch (error) {
+        console.error('Monte Carlo error:', error);
+        alert(`Monte Carlo analysis failed: ${error.message}`);
+    }
+}
+
 // Explicitly expose functions to global scope for inline onclick handlers
 window.downloadStrategy = downloadStrategy;
 window.downloadAllStrategies = downloadAllStrategies;
@@ -810,5 +876,8 @@ window.toggleStrategySelection = toggleStrategySelection;
 window.showComparison = showComparison;
 window.updateTrainingSplit = updateTrainingSplit;
 window.toggleWalkForwardSettings = toggleWalkForwardSettings;
+window.updateMonteCarloSettings = updateMonteCarloSettings;
+window.toggleMonteCarloSettings = toggleMonteCarloSettings;
+window.runMonteCarloForStrategy = runMonteCarloForStrategy;
 window.hideComparison = hideComparison;
 window.toggleCustomBarsInput = toggleCustomBarsInput;
