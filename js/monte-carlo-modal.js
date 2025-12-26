@@ -59,11 +59,18 @@ function displayMonteCarloModal(strategy, index, results) {
                 <!-- Summary Statistics -->
                 <div class="mc-summary">
                     <div class="mc-stat-card">
-                        <div class="mc-label">Expected Return</div>
-                        <div class="mc-value ${expectedReturn >= 0 ? 'positive' : 'negative'}">
-                            ${expectedReturn > 0 ? '+' : ''}${expectedReturn.toFixed(2)}%
+                        <div class="mc-label">Max Drawdown (Worst)</div>
+                        <div class="mc-value negative">
+                            ${results.statistics.drawdown.percentile95.toFixed(2)}%
                         </div>
-                        <div class="mc-sublabel">Mean final equity</div>
+                        <div class="mc-sublabel">95th percentile (worst 5%)</div>
+                    </div>
+                    <div class="mc-stat-card">
+                        <div class="mc-label">Max Drawdown (Median)</div>
+                        <div class="mc-value mc-warning">
+                            ${results.statistics.drawdown.median.toFixed(2)}%
+                        </div>
+                        <div class="mc-sublabel">Typical drawdown scenario</div>
                     </div>
                     <div class="mc-stat-card">
                         <div class="mc-label">Risk of Ruin</div>
@@ -75,96 +82,96 @@ function displayMonteCarloModal(strategy, index, results) {
                         <div class="mc-value">${results.iterations.toLocaleString()}</div>
                         <div class="mc-sublabel">Completed in ${results.executionTime.toFixed(0)}ms</div>
                     </div>
-                    <div class="mc-stat-card">
-                        <div class="mc-label">Std Deviation</div>
-                        <div class="mc-value">$${stats.stdDev.toFixed(2)}</div>
-                        <div class="mc-sublabel">Variability measure</div>
-                    </div>
                 </div>
                 
-                <!-- Equity Distribution Histogram -->
+                <!-- Drawdown Distribution Histogram -->
                 <div class="chart-section">
-                    <h3>Equity Distribution</h3>
+                    <h3>📉 Drawdown Distribution</h3>
                     <p style="color: #a0aec0; margin-bottom: 15px;">
-                        Distribution of final equity across ${results.iterations.toLocaleString()} randomized trade sequences
+                        Distribution of maximum drawdown across ${results.iterations.toLocaleString()} randomized trade sequences
                     </p>
                     <canvas id="mc-histogram" style="max-height: 300px;"></canvas>
                 </div>
                 
-                <!-- Percentile Statistics -->
+                <!-- Educational Note -->
+                <div class="mc-explanation" style="margin-top: 20px; background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 15px;">
+                    <h4 style="margin-bottom: 10px; color: #60a5fa;">💡 Understanding Monte Carlo Results</h4>
+                    <p style="margin-bottom: 8px;">
+                        <strong>Why focus on drawdown?</strong> When shuffling trades, the final equity stays nearly constant 
+                        (sum of trades doesn't change), but the <strong>drawdown varies significantly</strong> based on trade order.
+                    </p>
+                    <p style="margin-bottom: 0;">
+                        <strong>Key Insight:</strong> A robust strategy should show <strong>consistent low drawdowns</strong> across 
+                        different trade sequences. High drawdown variance indicates the strategy's performance is highly dependent 
+                        on lucky trade timing.
+                    </p>
+                </div>
+                
+                <!-- Drawdown Percentile Statistics -->
                 <div class="mc-percentiles">
-                    <h3>Percentile Analysis</h3>
+                    <h3>Drawdown Percentile Analysis</h3>
                     <table class="mc-percentile-table">
                         <thead>
                             <tr>
                                 <th>Percentile</th>
-                                <th>Final Equity</th>
-                                <th>Return</th>
+                                <th>Max Drawdown</th>
                                 <th>Interpretation</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>5th (Worst 5%)</strong></td>
-                                <td>$${stats.percentile5.toFixed(2)}</td>
-                                <td class="${((stats.percentile5 - 10000) / 10000 * 100) >= 0 ? 'positive' : 'negative'}">
-                                    ${((stats.percentile5 - 10000) / 10000 * 100) > 0 ? '+' : ''}${((stats.percentile5 - 10000) / 10000 * 100).toFixed(2)}%
-                                </td>
-                                <td>Downside risk scenario</td>
+                                <td><strong>5th (Best 5%)</strong></td>
+                                <td class="positive">${results.statistics.drawdown.percentile5.toFixed(2)}%</td>
+                                <td>Best-case drawdown scenario</td>
                             </tr>
                             <tr>
                                 <td><strong>25th</strong></td>
-                                <td>$${stats.percentile25.toFixed(2)}</td>
-                                <td class="${((stats.percentile25 - 10000) / 10000 * 100) >= 0 ? 'positive' : 'negative'}">
-                                    ${((stats.percentile25 - 10000) / 10000 * 100) > 0 ? '+' : ''}${((stats.percentile25 - 10000) / 10000 * 100).toFixed(2)}%
-                                </td>
-                                <td>Below average outcome</td>
+                                <td>${results.statistics.drawdown.percentile25.toFixed(2)}%</td>
+                                <td>Better than average</td>
                             </tr>
                             <tr class="highlight-row">
                                 <td><strong>50th (Median)</strong></td>
-                                <td>$${stats.percentile50.toFixed(2)}</td>
-                                <td class="${((stats.percentile50 - 10000) / 10000 * 100) >= 0 ? 'positive' : 'negative'}">
-                                    ${((stats.percentile50 - 10000) / 10000 * 100) > 0 ? '+' : ''}${((stats.percentile50 - 10000) / 10000 * 100).toFixed(2)}%
-                                </td>
-                                <td>Typical outcome</td>
+                                <td>${results.statistics.drawdown.median.toFixed(2)}%</td>
+                                <td>Typical drawdown</td>
                             </tr>
                             <tr>
                                 <td><strong>75th</strong></td>
-                                <td>$${stats.percentile75.toFixed(2)}</td>
-                                <td class="${((stats.percentile75 - 10000) / 10000 * 100) >= 0 ? 'positive' : 'negative'}">
-                                    ${((stats.percentile75 - 10000) / 10000 * 100) > 0 ? '+' : ''}${((stats.percentile75 - 10000) / 10000 * 100).toFixed(2)}%
-                                </td>
-                                <td>Above average outcome</td>
+                                <td class="mc-warning">${results.statistics.drawdown.percentile75.toFixed(2)}%</td>
+                                <td>Worse than average</td>
                             </tr>
                             <tr>
-                                <td><strong>95th (Best 5%)</strong></td>
-                                <td>$${stats.percentile95.toFixed(2)}</td>
-                                <td class="${((stats.percentile95 - 10000) / 10000 * 100) >= 0 ? 'positive' : 'negative'}">
-                                    ${((stats.percentile95 - 10000) / 10000 * 100) > 0 ? '+' : ''}${((stats.percentile95 - 10000) / 10000 * 100).toFixed(2)}%
-                                </td>
-                                <td>Upside potential</td>
+                                <td><strong>95th (Worst 5%)</strong></td>
+                                <td class="negative">${results.statistics.drawdown.percentile95.toFixed(2)}%</td>
+                                <td>Worst-case drawdown scenario</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 
-                <!-- Confidence Intervals -->
+                <!-- Drawdown Statistics Summary -->
                 <div class="mc-confidence">
-                    <h3>Confidence Intervals</h3>
+                    <h3>Drawdown Statistics Summary</h3>
                     <div class="mc-confidence-grid">
                         <div class="mc-confidence-card">
-                            <div class="mc-confidence-label">90% Confidence Range</div>
+                            <div class="mc-confidence-label">Average Drawdown</div>
                             <div class="mc-confidence-value">
-                                $${results.confidence.range90.lower.toFixed(2)} - $${results.confidence.range90.upper.toFixed(2)}
+                                ${results.statistics.drawdown.mean.toFixed(2)}%
                             </div>
-                            <div class="mc-confidence-sublabel">90% of outcomes fall within this range</div>
+                            <div class="mc-confidence-sublabel">Mean across all simulations</div>
                         </div>
                         <div class="mc-confidence-card">
-                            <div class="mc-confidence-label">50% Confidence Range</div>
+                            <div class="mc-confidence-label">Drawdown Std Dev</div>
                             <div class="mc-confidence-value">
-                                $${results.confidence.range50.lower.toFixed(2)} - $${results.confidence.range50.upper.toFixed(2)}
+                                ${results.statistics.drawdown.stdDev.toFixed(2)}%
                             </div>
-                            <div class="mc-confidence-sublabel">50% of outcomes fall within this range</div>
+                            <div class="mc-confidence-sublabel">Variability in drawdown outcomes</div>
+                        </div>
+                        <div class="mc-confidence-card">
+                            <div class="mc-confidence-label">Expected Return</div>
+                            <div class="mc-confidence-value ${expectedReturn >= 0 ? 'positive' : 'negative'}">
+                                ${expectedReturn > 0 ? '+' : ''}${expectedReturn.toFixed(2)}%
+                            </div>
+                            <div class="mc-confidence-sublabel">Consistent across simulations</div>
                         </div>
                     </div>
                 </div>
@@ -203,32 +210,34 @@ function drawMonteCarloHistogram(results, stats) {
 
     const ctx = canvas.getContext('2d');
 
-    // Create histogram bins
+    // Create histogram bins for DRAWDOWN distribution
     const numBins = 30;
-    const min = Math.min(...results.distribution);
-    const max = Math.max(...results.distribution);
+    const drawdownData = results.drawdownDistribution;
+    const min = Math.min(...drawdownData);
+    const max = Math.max(...drawdownData);
     const binWidth = (max - min) / numBins;
 
     const bins = new Array(numBins).fill(0);
     const binLabels = [];
 
     for (let i = 0; i < numBins; i++) {
-        binLabels.push((min + i * binWidth).toFixed(0));
+        binLabels.push((min + i * binWidth).toFixed(1));
     }
 
-    // Fill bins
-    results.distribution.forEach(value => {
+    // Fill bins with drawdown data
+    drawdownData.forEach(value => {
         const binIndex = Math.min(Math.floor((value - min) / binWidth), numBins - 1);
         bins[binIndex]++;
     });
 
-    // Create gradient colors based on value
+    // Create gradient colors based on drawdown value (GREEN = low DD, RED = high DD)
+    const ddStats = results.statistics.drawdown;
     const backgroundColors = bins.map((_, i) => {
         const value = min + (i + 0.5) * binWidth;
-        if (value < stats.percentile5) return 'rgba(245, 101, 101, 0.7)'; // Red for worst 5%
-        if (value < stats.percentile25) return 'rgba(237, 137, 54, 0.7)'; // Orange
-        if (value < stats.percentile75) return 'rgba(72, 187, 120, 0.7)'; // Green
-        return 'rgba(56, 178, 172, 0.7)'; // Teal for best 25%
+        if (value < ddStats.percentile25) return 'rgba(72, 187, 120, 0.7)'; // Green for best 25%
+        if (value < ddStats.percentile50) return 'rgba(56, 178, 172, 0.7)'; // Teal
+        if (value < ddStats.percentile75) return 'rgba(237, 137, 54, 0.7)'; // Orange
+        return 'rgba(245, 101, 101, 0.7)'; // Red for worst 25%
     });
 
     new Chart(ctx, {
@@ -258,7 +267,7 @@ function drawMonteCarloHistogram(results, stats) {
                         title: function (context) {
                             const binStart = parseFloat(context[0].label);
                             const binEnd = binStart + binWidth;
-                            return `$${binStart.toFixed(0)} - $${binEnd.toFixed(0)}`;
+                            return `${binStart.toFixed(1)}% - ${binEnd.toFixed(1)}%`;
                         },
                         label: function (context) {
                             const percentage = (context.parsed.y / results.iterations * 100).toFixed(1);
@@ -268,15 +277,15 @@ function drawMonteCarloHistogram(results, stats) {
                 },
                 annotation: {
                     annotations: {
-                        meanLine: {
+                        medianLine: {
                             type: 'line',
-                            xMin: ((stats.mean - min) / binWidth),
-                            xMax: ((stats.mean - min) / binWidth),
+                            xMin: ((ddStats.median - min) / binWidth),
+                            xMax: ((ddStats.median - min) / binWidth),
                             borderColor: '#667eea',
                             borderWidth: 2,
                             borderDash: [5, 5],
                             label: {
-                                content: 'Mean',
+                                content: 'Median',
                                 enabled: true,
                                 position: 'top'
                             }
@@ -306,7 +315,7 @@ function drawMonteCarloHistogram(results, stats) {
                     },
                     title: {
                         display: true,
-                        text: 'Final Equity ($)',
+                        text: 'Maximum Drawdown (%)',
                         color: '#a0aec0'
                     }
                 }

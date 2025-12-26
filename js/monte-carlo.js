@@ -21,9 +21,7 @@ class MonteCarloSimulation {
      * @returns {Object} Statistical results
      */
     run() {
-        console.log(`🎲 Running Monte Carlo simulation (${this.iterations} iterations)...`);
         const startTime = performance.now();
-
         const results = [];
 
         for (let i = 0; i < this.iterations; i++) {
@@ -41,8 +39,6 @@ class MonteCarloSimulation {
 
         const statistics = this.calculateStatistics(results);
         const endTime = performance.now();
-
-        console.log(`✅ Monte Carlo complete in ${(endTime - startTime).toFixed(0)}ms`);
 
         return {
             iterations: this.iterations,
@@ -138,6 +134,9 @@ class MonteCarloSimulation {
                 min: Math.min(...drawdowns),
                 max: Math.max(...drawdowns),
                 percentile5: this.getPercentile(drawdowns, 5),
+                percentile25: this.getPercentile(drawdowns, 25),
+                percentile50: this.getPercentile(drawdowns, 50),
+                percentile75: this.getPercentile(drawdowns, 75),
                 percentile95: this.getPercentile(drawdowns, 95)
             }
         };
@@ -260,12 +259,14 @@ class MonteCarloSimulation {
             throw new Error('Strategy must have backtest results with trades');
         }
 
-        return strategy.metrics.trades.map(trade => ({
+        const trades = strategy.metrics.trades.map(trade => ({
             profit: trade.profit,
             type: trade.type,
             entry: trade.entry,
             exit: trade.exit
         }));
+
+        return trades;
     }
 }
 
