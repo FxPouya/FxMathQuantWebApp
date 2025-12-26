@@ -528,7 +528,7 @@ Please provide:
 
 ### Documentation
 
-- **DataProvider EA Guide**: See `downloads/README.md`
+- **DataProvider EA Guide**: [Open EA Guide](ea-guide.html)
 - **API Documentation**: For developers
 - **License System**: Setup and management
 
