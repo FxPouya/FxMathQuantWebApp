@@ -16,7 +16,8 @@ class CTraderConverter {
         const magicNumber = Math.floor(100000 + Math.random() * 900000);
 
         const buyConditions = this.parser.parseRules(buy_rules, 'csharp');
-        const sellConditions = this.parser.parseRules(sell_rules, 'csharp');
+        // SELL rules use inverted operators
+        const sellConditions = this.parser.parseRulesInverted(buy_rules, 'csharp');
 
         // Convert MQL-style array access to cTrader MarketSeries
         const convertToCTrader = (condition) => {
@@ -108,7 +109,7 @@ namespace cAlgo.Robots
         public int EndMinute { get; set; }
 
         //=== SIGNAL SETTINGS ===
-        [Parameter("Close on Opposite", DefaultValue = true, Group = "Signals")]
+        [Parameter("Close on Opposite", DefaultValue = false, Group = "Signals")]
         public bool CloseOnOpposite { get; set; }
 
         //=== DISPLAY SETTINGS ===

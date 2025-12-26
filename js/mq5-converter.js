@@ -16,7 +16,8 @@ class MQ5Converter {
         const magicNumber = Math.floor(100000 + Math.random() * 900000);
 
         const buyConditions = this.parser.parseRules(buy_rules, 'mq5');
-        const sellConditions = this.parser.parseRules(sell_rules, 'mq5');
+        // SELL rules use inverted operators
+        const sellConditions = this.parser.parseRulesInverted(buy_rules, 'mq5');
 
         return `//+------------------------------------------------------------------+
 //|                                           Strategy_${symbol}.mq5 |
@@ -65,7 +66,7 @@ input int EndMinute = 0;                       // End Minute
 
 //=== SIGNAL SETTINGS ===
 input group "=== Signal Settings ==="
-input bool CloseOnOpposite = true;             // Close Trade on Opposite Signal
+input bool CloseOnOpposite = false;             // Close Trade on Opposite Signal
 
 //=== DISPLAY SETTINGS ===
 input group "=== Display Settings ==="

@@ -6,31 +6,49 @@ class RuleParser {
         return rules.map(rule => this.parseRule(rule, platform));
     }
 
-    parseRule(rule, platform = 'mql') {
+    // Parse rules with inverted operators (for SELL signals)
+    parseRulesInverted(rules, platform = 'mql') {
+        return rules.map(rule => this.parseRule(rule, platform, true));
+    }
+
+    parseRule(rule, platform = 'mql', invertOp = false) {
         if (rule.type === 'simple') {
-            return this.parseSimpleRule(rule, platform);
+            return this.parseSimpleRule(rule, platform, invertOp);
         } else {
-            return this.parseArithmeticRule(rule, platform);
+            return this.parseArithmeticRule(rule, platform, invertOp);
         }
     }
 
-    parseSimpleRule(rule, platform) {
+    parseSimpleRule(rule, platform, invertOp = false) {
         const left = this.getPriceReference(rule.left.price, rule.left.shift, platform);
         const right = this.getPriceReference(rule.right.price, rule.right.shift, platform);
-        const operator = rule.operator;
+        const operator = invertOp ? this.invertOperator(rule.operator) : rule.operator;
 
         return `${left} ${operator} ${right}`;
     }
 
-    parseArithmeticRule(rule, platform) {
+    parseArithmeticRule(rule, platform, invertOp = false) {
         const left1 = this.getPriceReference(rule.left.price1, rule.left.shift1, platform);
         const left2 = this.getPriceReference(rule.left.price2, rule.left.shift2, platform);
         const leftOp = rule.left.op;
         const right = this.getPriceReference(rule.right.price, rule.right.shift, platform);
         const multiplier = rule.right.multiplier;
-        const operator = rule.operator;
+        const operator = invertOp ? this.invertOperator(rule.operator) : rule.operator;
 
         return `(${left1} ${leftOp} ${left2}) ${operator} (${right} * ${multiplier})`;
+    }
+
+    // Invert comparison operators for SELL signals
+    invertOperator(operator) {
+        const inversionMap = {
+            '<': '>=',
+            '<=': '>',
+            '>': '<=',
+            '>=': '<',
+            '==': '!=',
+            '!=': '=='
+        };
+        return inversionMap[operator] || operator;
     }
 
     getPriceReference(priceType, shift, platform) {

@@ -16,7 +16,8 @@ class MQ4Converter {
         const magicNumber = Math.floor(100000 + Math.random() * 900000);
 
         const buyConditions = this.parser.parseRules(buy_rules, 'mql');
-        const sellConditions = this.parser.parseRules(sell_rules, 'mql');
+        // SELL rules use inverted operators
+        const sellConditions = this.parser.parseRulesInverted(buy_rules, 'mql');
 
         return `//+------------------------------------------------------------------+
 //|                                           Strategy_${symbol}.mq4 |
@@ -58,7 +59,7 @@ input int EndHour = 22;                        // End Hour (Server Time)
 input int EndMinute = 0;                       // End Minute
 
 //=== SIGNAL SETTINGS ===
-input bool CloseOnOpposite = true;             // Close Trade on Opposite Signal
+input bool CloseOnOpposite = false;             // Close Trade on Opposite Signal
 
 //=== DISPLAY SETTINGS ===
 input bool ShowChartInfo = true;               // Show Info on Chart

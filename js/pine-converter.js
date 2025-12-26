@@ -13,7 +13,8 @@ class PineConverter {
         const tpMultiplier = parameters.tp_multiplier || 3.0;
 
         const buyConditions = this.parser.parseRules(buy_rules, 'pine');
-        const sellConditions = this.parser.parseRules(sell_rules, 'pine');
+        // SELL rules use inverted operators
+        const sellConditions = this.parser.parseRulesInverted(buy_rules, 'pine');
 
         return `//@version=5
 strategy("Strategy ${symbol}", overlay=true, 
