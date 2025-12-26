@@ -14,8 +14,14 @@ class GeneticOptimizer {
             minTrades: config.minTrades || 30,
             minPF: config.minPF || 1.5,
             maxDD: config.maxDD || 25,
-            minWR: config.minWR || 45
+            minWR: config.minWR || 45,
+            // Walk-Forward Analysis settings
+            enableWalkForward: config.enableWalkForward || false,
+            trainingRatio: config.trainingRatio || 0.7
         };
+
+        // Debug: Log walk-forward config
+        console.log('🔧 GA Config - Walk-Forward:', this.config.enableWalkForward, 'Ratio:', this.config.trainingRatio);
 
         this.population = [];
         this.foundStrategies = [];
@@ -40,10 +46,38 @@ class GeneticOptimizer {
      * Evaluate fitness for all strategies
      */
     evaluatePopulation() {
+        // Log walk-forward status (only once per generation)
+        if (this.currentGeneration === 0) {
+            console.log('🔬 Walk-Forward Analysis:', this.config.enableWalkForward ? 'ENABLED' : 'DISABLED');
+            if (this.config.enableWalkForward) {
+                console.log('📊 Training Ratio:', (this.config.trainingRatio * 100) + '%');
+            }
+        }
+
         for (const strategy of this.population) {
+            // Regular backtest on full data
             const backtester = new Backtester(this.data, strategy, this.symbol);
             strategy.metrics = backtester.run();
-            strategy.fitness = this.calculateFitness(strategy.metrics);
+
+            // Walk-forward analysis (if enabled)
+            if (this.config.enableWalkForward) {
+                const wfAnalysis = new WalkForwardAnalysis(
+                    this.data,
+                    this.config.trainingRatio || 0.7
+                );
+                strategy.walkForward = wfAnalysis.analyze(strategy, this.symbol);
+
+                // Penalize strategies that fail walk-forward validation
+                if (!strategy.walkForward.passed) {
+                    strategy.fitness = this.calculateFitness(strategy.metrics) * 0.5; // 50% penalty
+                } else {
+                    // Bonus for high robustness
+                    const robustnessBonus = 1 + (strategy.walkForward.robustness / 200); // Up to 50% bonus
+                    strategy.fitness = this.calculateFitness(strategy.metrics) * robustnessBonus;
+                }
+            } else {
+                strategy.fitness = this.calculateFitness(strategy.metrics);
+            }
         }
 
         // Sort by fitness (descending)

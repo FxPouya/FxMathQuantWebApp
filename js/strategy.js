@@ -100,6 +100,8 @@ class Strategy {
         newStrategy.closeAtOpposite = this.closeAtOpposite;
         newStrategy.metrics = this.metrics ? JSON.parse(JSON.stringify(this.metrics)) : {};
         newStrategy.fitness = this.fitness || 0;
+        // Copy walk-forward analysis results
+        newStrategy.walkForward = this.walkForward ? JSON.parse(JSON.stringify(this.walkForward)) : undefined;
         return newStrategy;
     }
 

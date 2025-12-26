@@ -281,7 +281,10 @@ async function startGeneration() {
         minPF: parseFloat(document.getElementById('min-pf').value),
         minWR: parseFloat(document.getElementById('min-wr').value),
         maxDD: parseFloat(document.getElementById('max-dd').value),
-        minTrades: parseInt(document.getElementById('min-trades').value)
+        minTrades: parseInt(document.getElementById('min-trades').value),
+        // Walk-Forward Analysis settings
+        enableWalkForward: document.getElementById('enable-walkforward').checked,
+        trainingRatio: parseInt(document.getElementById('training-ratio').value) / 100
     };
 
     // Show progress section
@@ -469,9 +472,30 @@ function createStrategyCard(strategy, number) {
     const card = document.createElement('div');
     card.className = 'strategy-card';
 
+
+    // Generate walk-forward badge HTML (only if walk-forward was enabled and data exists)
+    let wfBadgeHTML = '';
+    if (strategy.walkForward && typeof strategy.walkForward === 'object') {
+        const wf = strategy.walkForward;
+        if (wf.robustness !== undefined && wf.passed !== undefined) {
+            const badgeClass = wf.passed ? 'wf-badge-pass' : 'wf-badge-fail';
+            const badgeIcon = wf.passed ? '✓' : '⚠';
+            const badgeText = wf.passed ? 'Robust' : 'Overfitted';
+            wfBadgeHTML = `
+                <div class="wf-badge ${badgeClass}" title="Robustness Score: ${wf.robustness}/100">
+                    <span class="wf-icon">${badgeIcon}</span>
+                    <span class="wf-text">${badgeText}</span>
+                    <span class="wf-score">${wf.robustness}</span>
+                </div>
+            `;
+        }
+    }
+
+    const name = `Strategy #${number}`;
     card.innerHTML = `
         <div class="strategy-header">
             <div class="strategy-name">${name}</div>
+            ${wfBadgeHTML}
             <input type="checkbox" class="strategy-select" onchange="toggleStrategySelection(${number - 1}, this.checked)">
         </div>
         <div class="strategy-metrics">
@@ -750,10 +774,41 @@ function formatTime(seconds) {
     return `${minutes}m ${secs}s`;
 }
 
+/**
+ * Update training/testing split display
+ */
+function updateTrainingSplit() {
+    const ratio = parseInt(document.getElementById('training-ratio').value);
+    document.getElementById('training-percent').textContent = ratio;
+
+    // Update bar counts if data is loaded
+    if (appData.csvData) {
+        const totalBars = appData.csvData.length;
+        const trainingBars = Math.floor(totalBars * (ratio / 100));
+        const testingBars = totalBars - trainingBars;
+
+        document.getElementById('training-bars').textContent = trainingBars.toLocaleString();
+        document.getElementById('testing-bars').textContent = testingBars.toLocaleString();
+    }
+}
+
+/**
+ * Toggle walk-forward settings visibility
+ */
+function toggleWalkForwardSettings() {
+    const enabled = document.getElementById('enable-walkforward').checked;
+    const settings = document.getElementById('walkforward-settings');
+    if (settings) {
+        settings.style.display = enabled ? 'block' : 'none';
+    }
+}
+
 // Explicitly expose functions to global scope for inline onclick handlers
 window.downloadStrategy = downloadStrategy;
 window.downloadAllStrategies = downloadAllStrategies;
 window.toggleStrategySelection = toggleStrategySelection;
 window.showComparison = showComparison;
+window.updateTrainingSplit = updateTrainingSplit;
+window.toggleWalkForwardSettings = toggleWalkForwardSettings;
 window.hideComparison = hideComparison;
 window.toggleCustomBarsInput = toggleCustomBarsInput;

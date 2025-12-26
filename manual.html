@@ -191,6 +191,7 @@
                 <li><a href="#export">Exporting Data from MT4/MT5</a></li>
                 <li><a href="#upload">Uploading Data</a></li>
                 <li><a href="#config">Configuring Strategy Generation</a></li>
+                <li><a href="#walkforward">Walk-Forward Analysis</a></li>
                 <li><a href="#generate">Generating Strategies</a></li>
                 <li><a href="#results">Viewing Results</a></li>
                 <li><a href="#download">Downloading Strategies</a></li>
@@ -337,6 +338,102 @@
                 </tr>
             </tbody>
         </table>
+
+        <h3 id="walkforward">🔬 Walk-Forward Analysis</h3>
+        <p>Walk-forward analysis validates strategies on out-of-sample data to detect overfitting and ensure real-world
+            performance.</p>
+
+        <div class="alert alert-info">
+            <strong>What is Overfitting?</strong> A strategy that performs well on historical data but fails in live
+            trading due to being too closely fitted to past price patterns.
+        </div>
+
+        <h4>How It Works</h4>
+        <ol>
+            <li><strong>Data Splitting:</strong> Historical data is divided into training and testing periods</li>
+            <li><strong>Training Period:</strong> Strategy is optimized on this data (e.g., 70% of bars)</li>
+            <li><strong>Testing Period:</strong> Strategy is validated on unseen data (e.g., 30% of bars)</li>
+            <li><strong>Performance Comparison:</strong> Metrics are compared between training and testing</li>
+            <li><strong>Robustness Score:</strong> A score (0-100) indicates how well the strategy generalizes</li>
+        </ol>
+
+        <h4>Configuration</h4>
+        <ul>
+            <li><strong>Enable Walk-Forward Validation:</strong> Check this box to activate the feature</li>
+            <li><strong>Training Period:</strong> Adjust the slider (50-90%, default: 70%)
+                <ul>
+                    <li>Higher ratio = More data for training, less for validation</li>
+                    <li>Lower ratio = Less training data, more for validation</li>
+                    <li>Recommended: 70% for most cases</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h4>Understanding the Badges</h4>
+        <p>Each strategy card displays a walk-forward badge showing its robustness:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Badge</th>
+                    <th>Score Range</th>
+                    <th>Meaning</th>
+                    <th>Recommendation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>✓ ROBUST (Green)</td>
+                    <td>60-100</td>
+                    <td>Strategy passed validation</td>
+                    <td>Safe to use for live trading</td>
+                </tr>
+                <tr>
+                    <td>⚠ OVERFITTED (Orange)</td>
+                    <td>0-59</td>
+                    <td>Strategy failed validation</td>
+                    <td>Avoid - likely curve-fitted</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Robustness Score Interpretation</h4>
+        <ul>
+            <li><strong>80-100:</strong> Excellent - Minimal degradation, high confidence</li>
+            <li><strong>60-79:</strong> Good - Acceptable degradation, suitable for trading</li>
+            <li><strong>40-59:</strong> Moderate - Concerning degradation, needs review</li>
+            <li><strong>0-39:</strong> Poor - High overfitting risk, avoid</li>
+        </ul>
+
+        <h4>What Gets Measured</h4>
+        <p>The robustness score is calculated based on degradation in:</p>
+        <ul>
+            <li><strong>Profit Factor:</strong> How much profit factor drops in testing vs. training</li>
+            <li><strong>Win Rate:</strong> Percentage point decrease in win rate</li>
+            <li><strong>Max Drawdown:</strong> Increase in maximum drawdown</li>
+            <li><strong>Trade Count:</strong> Sufficient trades in testing period</li>
+        </ul>
+
+        <div class="alert alert-warning">
+            <strong>Important:</strong> A strategy with excellent training performance but poor testing performance is
+            likely overfitted and should be avoided.
+        </div>
+
+        <h4>Best Practices</h4>
+        <ul>
+            <li>Use at least 1,000 bars of data (minimum 300 for testing)</li>
+            <li>Keep training ratio at 70% for balanced results</li>
+            <li>Only trade strategies with robustness score ≥ 60</li>
+            <li>Prefer strategies with scores above 80 for higher confidence</li>
+            <li>If all strategies fail, try different data or settings</li>
+        </ul>
+
+        <h4>Impact on Strategy Generation</h4>
+        <p>When walk-forward is enabled:</p>
+        <ul>
+            <li><strong>Failed strategies:</strong> Receive 50% fitness penalty (less likely to be selected)</li>
+            <li><strong>Robust strategies:</strong> Receive up to 50% fitness bonus (prioritized)</li>
+            <li><strong>Result:</strong> GA naturally evolves toward robust, non-overfitted strategies</li>
+        </ul>
 
         <h2 id="generate">🎯 Generating Strategies</h2>
         <ol>
